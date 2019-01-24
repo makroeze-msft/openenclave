@@ -30,7 +30,7 @@ char* oe_host_strdup(const char* str)
     char* dup = (char*)oe_host_malloc(n + 1);
 
     if (dup)
-        oe_memcpy(dup, str, n + 1);
+        memcpy(dup, str, n + 1);
 
     return dup;
 }
@@ -89,7 +89,7 @@ static oe_result_t _syscall_hook(
             oe_call_host("f_read", args);
 
             if ((args->ret) > 0)
-                oe_memcpy(enc_buf, host_buf, (size_t)arg3);
+                memcpy(enc_buf, host_buf, (size_t)arg3);
             *ret = args->ret;
             oe_host_free(host_buf);
 
@@ -117,7 +117,7 @@ static oe_result_t _syscall_hook(
 
             if ((args->ret) > 0)
                 for (i = 0; i < (int)arg3; i++)
-                    oe_memcpy(
+                    memcpy(
                         iov[i].iov_base, iov_host[i].iov_base, iov[i].iov_len);
             *ret = args->ret;
             for (i = 0; i < (int)arg3; i++)
