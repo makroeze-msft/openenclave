@@ -1,0 +1,6 @@
+<map id="enclave.h" name="enclave.h">
+<area shape="rect" id="node3" href="$exception_8h.html" title="This file defines data structures to set up vectored exception handlers in the enclave. " alt="" coords="265,95,388,121"/>
+<area shape="rect" id="node6" href="$properties_8h.html" title="This file defines the properties for an enclave. " alt="" coords="547,95,674,121"/>
+<area shape="rect" id="node8" href="$result_8h.html" title="This file defines Open Enclave return codes (results). " alt="" coords="533,184,603,211"/>
+<area shape="rect" id="node11" href="$report_8h.html" title="This file defines structures and options passed to oe_get_report functions. " alt="" coords="409,184,509,211"/>
+</map>
