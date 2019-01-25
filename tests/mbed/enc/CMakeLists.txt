@@ -47,6 +47,7 @@ function(add_mbed_test_enclave NAME)
     ${PROJECT_SOURCE_DIR}/3rdparty/mbedtls/mbedtls/tests
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_BINARY_DIR}/3rdparty/mbedtls/mbedtls-wrap-prefix/src/mbedtls-wrap/include/)
+  target_link_libraries(mbedtest_suite_${NAME} oelibc)
 endfunction()
 
 # This is simpler version of the above for the single "selftest" test
@@ -66,6 +67,7 @@ function(add_mbed_selftest_enclave)
     ${PROJECT_SOURCE_DIR}/3rdparty/mbedtls/mbedtls/tests
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_BINARY_DIR}/3rdparty/mbedtls/mbedtls-wrap-prefix/src/mbedtls-wrap/include/)
+  target_link_libraries(mbedtest_selftest oelibc)
 endfunction()
 
 string(TOUPPER ${CMAKE_BUILD_TYPE} build_type)
