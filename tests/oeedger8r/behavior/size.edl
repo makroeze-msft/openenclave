@@ -1,0 +1,11 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+enclave {
+    trusted {
+        // Signed size should generate a warning.
+        public void ecall_signed_size(
+            [in, size=size] void* in,
+            int size);
+    };
+};
