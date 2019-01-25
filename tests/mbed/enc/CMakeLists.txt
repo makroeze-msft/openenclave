@@ -22,9 +22,27 @@ function(add_mbed_test_enclave NAME)
 
   set(MBEDTLS_TESTS_DIR "${PROJECT_SOURCE_DIR}/3rdparty/mbedtls/mbedtls/tests")
 
+  # Use Perl that is found in the Path
+  # If Perl is not found on Windows, use Perl from the Git/usr/bin directory
+  # and report error on Linux
+  find_program(PERL perl)
+  if (NOT PERL)
+    if (WIN32)
+      find_program(GIT git)
+      get_filename_component(GIT_DIR ${GIT} DIRECTORY)
+      find_program(PERL perl
+         PATHS "C:/Program Files/Git/usr/bin" "${GIT_DIR}/../usr/bin")
+      if (NOT PERL)
+        message(FATAL_ERROR "Cannot build mbedtls Test Suites without Perl")
+      endif()
+    else()
+      message(FATAL_ERROR "Cannot build mbedtls Test Suites without Perl")
+    endif()
+  endif()
+
   add_custom_command(
     OUTPUT test_suite_${NAME}.c
-    COMMAND ${PERL_EXECUTABLE} ${MBEDTLS_TESTS_DIR}/scripts/generate_code.pl ${MBEDTLS_TESTS_DIR}/suites test_suite_${suite_name} test_suite_${data_name}
+    COMMAND ${PERL} ${MBEDTLS_TESTS_DIR}/scripts/generate_code.pl ${MBEDTLS_TESTS_DIR}/suites test_suite_${suite_name} test_suite_${data_name}
     DEPENDS
     mbedcrypto
     ${MBEDTLS_TESTS_DIR}/scripts/generate_code.pl
@@ -47,6 +65,30 @@ function(add_mbed_test_enclave NAME)
     ${PROJECT_SOURCE_DIR}/3rdparty/mbedtls/mbedtls/tests
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_BINARY_DIR}/3rdparty/mbedtls/mbedtls-wrap-prefix/src/mbedtls-wrap/include/)
+
+  maybe_build_using_clangw(mbedtest_suite_${NAME})
+
+  # maybe_build_using_clangw populates variables in its parent scope (ie current scope)
+  # Propagate these variables back up to the caller.
+
+  # Propagate library names variables
+  set(CMAKE_STATIC_LIBRARY_PREFIX "${CMAKE_STATIC_LIBRARY_PREFIX}" PARENT_SCOPE)
+  set(CMAKE_STATIC_LIBRARY_SUFFIX "${CMAKE_STATIC_LIBRARY_SUFFIX}" PARENT_SCOPE)
+
+  # Propagate library tool variables
+  set(CMAKE_C_CREATE_STATIC_LIBRARY "${CMAKE_C_CREATE_STATIC_LIBRARY}" PARENT_SCOPE)
+  set(CMAKE_CXX_CREATE_STATIC_LIBRARY "${CMAKE_CXX_CREATE_STATIC_LIBRARY}" PARENT_SCOPE)
+
+  # Propagate linker variables
+  set(CMAKE_EXECUTABLE_SUFFIX "${CMAKE_EXECUTABLE_SUFFIX}" PARENT_SCOPE)
+  set(CMAKE_C_STANDARD_LIBRARIES "${CMAKE_C_STANDARD_LIBRARIES}" PARENT_SCOPE)
+  set(CMAKE_C_LINK_EXECUTABLE "${CMAKE_C_LINK_EXECUTABLE}" PARENT_SCOPE)
+  set(CMAKE_CXX_STANDARD_LIBRARIES "${CMAKE_CXX_STANDARD_LIBRARIES}" PARENT_SCOPE)
+  set(CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE}" PARENT_SCOPE)
+
+  # Propagate cpmpiler variables
+  set(CMAKE_C_COMPILE_OBJECT "${CMAKE_C_COMPILE_OBJECT}" PARENT_SCOPE)
+  set(CMAKE_CXX_COMPILE_OBJECT "${CMAKE_CXX_COMPILE_OBJECT}" PARENT_SCOPE)  
 endfunction()
 
 # This is simpler version of the above for the single "selftest" test
@@ -66,6 +108,30 @@ function(add_mbed_selftest_enclave)
     ${PROJECT_SOURCE_DIR}/3rdparty/mbedtls/mbedtls/tests
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_BINARY_DIR}/3rdparty/mbedtls/mbedtls-wrap-prefix/src/mbedtls-wrap/include/)
+
+  maybe_build_using_clangw(mbedtest_selftest)
+
+  # maybe_build_using_clangw populates variables in its parent scope (ie current scope)
+  # Propagate these variables back up to the caller.
+
+  # Propagate library names variables
+  set(CMAKE_STATIC_LIBRARY_PREFIX "${CMAKE_STATIC_LIBRARY_PREFIX}" PARENT_SCOPE)
+  set(CMAKE_STATIC_LIBRARY_SUFFIX "${CMAKE_STATIC_LIBRARY_SUFFIX}" PARENT_SCOPE)
+
+  # Propagate library tool variables
+  set(CMAKE_C_CREATE_STATIC_LIBRARY "${CMAKE_C_CREATE_STATIC_LIBRARY}" PARENT_SCOPE)
+  set(CMAKE_CXX_CREATE_STATIC_LIBRARY "${CMAKE_CXX_CREATE_STATIC_LIBRARY}" PARENT_SCOPE)
+
+  # Propagate linker variables
+  set(CMAKE_EXECUTABLE_SUFFIX "${CMAKE_EXECUTABLE_SUFFIX}" PARENT_SCOPE)
+  set(CMAKE_C_STANDARD_LIBRARIES "${CMAKE_C_STANDARD_LIBRARIES}" PARENT_SCOPE)
+  set(CMAKE_C_LINK_EXECUTABLE "${CMAKE_C_LINK_EXECUTABLE}" PARENT_SCOPE)
+  set(CMAKE_CXX_STANDARD_LIBRARIES "${CMAKE_CXX_STANDARD_LIBRARIES}" PARENT_SCOPE)
+  set(CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE}" PARENT_SCOPE)
+
+  # Propagate cpmpiler variables
+  set(CMAKE_C_COMPILE_OBJECT "${CMAKE_C_COMPILE_OBJECT}" PARENT_SCOPE)
+  set(CMAKE_CXX_COMPILE_OBJECT "${CMAKE_CXX_COMPILE_OBJECT}" PARENT_SCOPE)
 endfunction()
 
 string(TOUPPER ${CMAKE_BUILD_TYPE} build_type)
