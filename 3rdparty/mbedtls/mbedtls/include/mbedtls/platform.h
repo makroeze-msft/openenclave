@@ -47,6 +47,7 @@ extern "C" {
  */
 
 #if !defined(MBEDTLS_PLATFORM_NO_STD_FUNCTIONS)
+#error "MBEDTLS_PLAT was not defined"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
